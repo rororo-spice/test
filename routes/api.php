@@ -57,11 +57,21 @@ Route::get('/review/getUserReview/{userId}', 'ReviewController@getWriteUserRevie
 Route::post('/review/registReview', 'ReviewController@registReview');
 Route::post('/review/deleteReview', 'ReviewController@deleteReview');
 
-// レビュー
+// フォロー
 Route::get('/follow/getUserFollow/{userId}', 'FollowController@getUserFollow');
 Route::get('/follow/getUserFollower/{userId}', 'FollowController@getUserFollower');
 Route::post('/follow/registFollow', 'FollowController@registFollow');
 Route::post('/follow/deleteFollow', 'FollowController@deleteFollow');
+
+// 案件
+Route::get('/project/getFavoriteProjectList/{userId}', 'ProjectController@getFavoriteProjectList');
+Route::get('/project/getAcceptProjectList/{userId}', 'ProjectController@getAcceptProjectList');
+Route::get('/project/getRequestProjectList/{userId}', 'ProjectController@getRequestProjectList');
+Route::post('/project/getProjectList', 'ProjectController@getProjectList');
+Route::post('/project/registProject', 'ProjectController@registProject');
+Route::post('/project/updateProject', 'ProjectController@updateProject');
+
+
 
 
 
