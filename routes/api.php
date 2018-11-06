@@ -71,6 +71,16 @@ Route::post('/project/getProjectList', 'ProjectController@getProjectList');
 Route::post('/project/registProject', 'ProjectController@registProject');
 Route::post('/project/updateProject', 'ProjectController@updateProject');
 
+// メッセージ
+Route::post('/message/getUserMessageList', 'MessageController@getUserMessageList');
+Route::post('/message/startMessage', 'MessageController@startMessage');
+Route::post('/message/postMessage', 'MessageController@postMessage');
+Route::post('/message/getMessage', 'MessageController@getMessage');
+
+// ユーザー
+Route::post('/user/getUserProfile', 'UserController@getUserProfile');
+Route::post('/user/updateUserProfile', 'UserController@updateUserProfile');
+
 
 
 

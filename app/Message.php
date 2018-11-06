@@ -18,10 +18,16 @@ class Message extends Model
      */
     public static function getUserMessageList($userId)
     {
-        $userData = DB::table('message_room_user_relation_id')
-            ->join('user_m', 'block_company_t.block_user_id', '=', 'user_m.user_id')
-            ->select('block_company_t.block_company_id', 'user_m.company_name', 'block_company_t.block_user_id')
-            ->where('block_company_t.user_id', $userId)
+        $userData = DB::table('message_room_user_relation_t')
+            ->join('user_m', 'message_room_user_relation_t.user_id', '=', 'user_m.user_id')
+            ->select('user_m.user_id', 'user_m.last_name', 'user_m.first_name', 'message_room_user_relation_t.message_room_id')
+            ->whereIn(DB::raw('(message_room_user_relation_t.message_room_id)'),
+                function ($query) use ($userId)
+                {
+                    $query->select('message_room_id')
+                        ->from('message_room_user_relation_t')
+                        ->where('user_id', $userId);
+                })
             ->get();
         return $userData;
     }
@@ -55,15 +61,34 @@ class Message extends Model
     }
 
     /**
-     * ブロック企業削除
-     * @param $blockCompanyId
+     * チャットメッセージ送信
+     * @param $roomId
+     * @param $userId
+     * @param $messageText
      * @return bool
      */
-    public static function deleteBlockCompany($blockCompanyId)
+    public static function postMessage($roomId, $userId, $messageText)
     {
-        $result = DB::table('block_company_t')
-            ->where('block_company_id', $blockCompanyId)
-            ->delete();
+        $result = DB::table('message_t')
+            ->insert(
+                ['message_room_id' => $roomId, 'user_id' => $userId, 'message_text' => $messageText,
+                    'send_time' => Carbon::now(), 'created_at' => Carbon::now()]
+            );
+        return $result;
+    }
+
+    /**
+     * チャットメッセージ取得
+     * @param $roomId
+     * @return \Illuminate\Support\Collection
+     */
+    public static function getMessage($roomId)
+    {
+        $result = DB::table('message_t')
+            ->join('user_m', 'message_t.user_id', '=', 'user_m.user_id')
+            ->select('user_m.user_id', 'user_m.last_name', 'user_m.first_name', 'message_t.message_text', 'message_t.send_time')
+            ->where('message_room_id', $roomId)
+            ->get();
         return $result;
     }
 }
